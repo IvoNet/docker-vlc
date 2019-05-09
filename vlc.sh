@@ -1,36 +1,28 @@
 #!/usr/bin/env bash
-NAME=vlc
-PORT=32000
-WAIT=3
 
-if [ ! "$(docker ps -q -f name=$NAME)" ]; then
+PORT=10001
 
-    [[ -z "$(brew ls --versions pulseaudio)" ]] && brew install pulseaudio
-    killall pulseaudio 2>/dev/null
-    pulseaudio --load=module-native-protocol-tcp --exit-idle-time=-1 --daemon 2>/dev/null
-
-
-    if [ "$(docker ps -aq -f status=exited -f name=$NAME)" ]; then
-        echo "Starting existing $NAME container..."
-        docker start $NAME
-        sleep $WAIT
-        open http://localhost:$PORT
-    else
-        echo "Starting new $NAME container..."
-        docker run                                    \
-            -d                                        \
-            --name $NAME                              \
-            -e PULSE_SERVER=docker.for.mac.localhost  \
-            -v ~/.config/pulse:/nobody/.config/pulse  \
-            -p $PORT:32000                            \
-            ivonet/vlc
-
-        sleep $WAIT
-        open http://localhost:$PORT
-    fi
-else
-    echo "Stopping $NAME..."
-    docker stop $NAME
-    killall pulseaudio 2>/dev/null
+[[ -z "$(brew ls --versions pulseaudio)" ]] && brew install pulseaudio
+killall pulseaudio 2>/dev/null
+sleep 1
+pulseaudio --load=module-native-protocol-tcp --exit-idle-time=-1 --daemon 2>/dev/null
+if [ -z "$(ps -ef|grep -v grep|grep pulseaudio)" ]; then
+    echo "Sound will probably not work!"
+    echo "Please make sure you run pulseaudio"
 fi
 
+docker run                                      \
+    -d                                          \
+    --rm                                        \
+    --name vlc                                  \
+    -e PULSE_SERVER=docker.for.mac.localhost    \
+    -v ~/.config/pulse:/nobody/.config/pulse    \
+    -p ${PORT}:32000                            \
+    -v /Users/ivonet/dev/ivonet-talks/docker/Docker.Fun:/nobody/video \
+    -e VNC_DEPTH=24                             \
+    ivonet/vlc
+
+echo "Login with: vlc/secret"
+sleep 5
+open http://localhost:${PORT}
+docker logs vlc -f

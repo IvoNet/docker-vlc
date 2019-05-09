@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-docker_name=ivonet
 image=vlc
 version=0.1
 
@@ -8,18 +7,22 @@ deploy="false"
 versioning=false
 #versioning=true
 
-#OPTIONS="$OPTIONS --no-cache"
-#OPTIONS="$OPTIONS --force-rm"
-OPTIONS="$OPTIONS --build-arg APP=vlc --build-arg ADMIN_NAME=vlcadmin --build-arg ADMIN_PASSWORD=secret --build-arg USERNAME=ivonet --build-arg PASSWORD=secret"
+#OPTIONS="--no-cache --force-rm"
+#OPTIONS="--no-cache"
+#OPTIONS="--force-rm"
+#OPTIONS="-$OPTIONS --build-arg VERSION=18.04"
 
-docker build ${OPTIONS} -t $docker_name/${image}:latest .
+docker build ${OPTIONS} -t ivonet/${image}:latest .
 if [ "$?" -eq 0 ] && [ ${deploy} == "true" ]; then
-    docker push $docker_name/${image}:latest
+    docker push ivonet/${image}:latest
 fi
 
 if [ "$versioning" == "true" ]; then
-    docker tag $docker_name/${image}:latest $docker_name/${image}:${version}
+    docker tag ivonet/${image}:latest ivonet/${image}:${version}
     if [ "$?" -eq 0 ] && [ ${deploy} == "true" ]; then
-        docker push $docker_name/${image}:${version}
+        docker push ivonet/${image}:${version}
     fi
 fi
+
+
+
