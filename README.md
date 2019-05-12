@@ -2,6 +2,9 @@
 
 Web desktop docker image for: vlc
 
+It works but not well as no hardware acceleration is working, so the movie will stutter a lot.
+I only created this image as a demo of what can an can not be done.
+
 # Usage
 
 See `run.sh` and `vlc.sh` for examples on how to run the application.
@@ -10,22 +13,21 @@ See `run.sh` and `vlc.sh` for examples on how to run the application.
 
 | Port number          | Description                                             |
 | :--------------------| :-------------------------------------------------------|
-| | |
-| | |
+| 32000 | the port where vlc is running on in the docker image |
 
 # Volumes
 
 | Volume path          | Description                                             |
 | :--------------------| :-------------------------------------------------------|
-| | |
-| | |
+| /nobody/video | mount this folder to a local folder with movies in them |
 
 # Environment variables
 
-| Environment Variable | Description                                             |
-| :--------------------| :-------------------------------------------------------|
-| | |
-| | |
+| Environment Variable | Description                                             | default          | 
+| :--------------------| :-------------------------------------------------------|:-----------------|
+| AUTH                 | enables or disables guacamole authentication            | false            |
+| USERNAME             | the name of the login user                              | vlc              |
+| PASSWORD             | the Password                                            | secret           |
 
 # Base image configurable settings
 
